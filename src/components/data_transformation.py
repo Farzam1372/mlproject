@@ -29,7 +29,6 @@ class DataTransformation:
                # .str.replace('[^a-z0-9]+', '_', regex=True)  # replace special chars with underscore
             #)
         
-        
             numeric_features = ['writing_score', 'reading_score']
             categorical_features = [
                 'gender', 'race_ethnicity', 

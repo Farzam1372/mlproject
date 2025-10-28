@@ -4,7 +4,6 @@ from src.exception import CustomException
 from src.logger import logging
 import pandas as pd
 
-# for importing data from kaggle
 import kagglehub
 from kagglehub import KaggleDatasetAdapter
 
@@ -29,8 +28,18 @@ class DataIngestion:
             path="StudentsPerformance.csv"    # location of the dataset
             ) 
 
-            
             logging.info('Read the dataset as dataframe')
+            
+            # Clean and standardize column names
+            df.columns = (
+                df.columns
+                .str.strip()                                      # remove extra spaces
+                .str.lower()                                      # lowercase
+                .str.replace(r'[^a-z0-9]+', '_', regex=True)      # replace special chars with underscores
+                .str.strip('_')                                   # remove leading/trailing underscores
+            )
+            
+            logging.info("Column names standardized successfully")
             
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path), exist_ok=True)
             
