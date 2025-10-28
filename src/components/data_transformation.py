@@ -21,15 +21,15 @@ class DataTransformation:
         self.data_transformation_config = DataTransformationConfig()
         
     def get_data_transformer_object(self):
-        try:
-           # df.columns = (
-            #    df.columns
-             #   .str.strip()                            # remove extra spaces
-              #  .str.lower()                            # lowercase
-               # .str.replace('[^a-z0-9]+', '_', regex=True)  # replace special chars with underscore
-            #)
+        '''
         
-            numeric_features = ['writing_score', 'reading_score']
+        This function is responsible for data transformation
+        
+        '''
+        try:
+            
+            
+            numeric_features = ['writing_score', 'reading_score', 'math_score']
             categorical_features = [
                 'gender', 'race_ethnicity', 
                 'parental_level_of_education',
@@ -42,7 +42,42 @@ class DataTransformation:
             ("scaler", StandardScaler())    
             
             ]
+            
+            
+        cat_pipeline = Pipeline(
+            steps = [
+                ("imputer", SimpleImputer(strategy="most_frequent")),
+                ("one_hot_encoder", OneHotEncoder()),
+                ("scaler", StandardScaler())
+            ]
+        )
+        
+        logging.info(f"Numerical columns:  {numerical_columns}")    
+        logging.info(f"Categorical columns: {categorical_columns}")
+        
+        preprocessor = ColumnTransformer(
+            [
+            ("num_pipeline", num_pipeline, numeric_features),
+            ("cat_pipeline", cat_pipeline, categorical_features)
+            ]
+            
         )    
+        
+        return preprocessor
+        
+        except Exception as e:
+            raise CustomException(e, sys)
+
+    def initiate_data_transformation(self, train_path, test_path):
+        try:
+            train_df = pd.read_csv(train_path)
+            test_df = pd.read_csv(test_path)
+            
+            logging.info("Read train and test data completed")
+            logging.info("Obtaining preprocessor object")
+            
+            preprocessor_obj = self.get_data_transformer_object()
+            
+            target_column_name = "math"
         except:
             pass
-        
