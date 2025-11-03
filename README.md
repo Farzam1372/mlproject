@@ -11,4 +11,5 @@ The link: https://www.kaggle.com/datasets/spscientist/students-performance-in-ex
 
 The script downloads the dataset, saves it under artifacts/data.csv, and automatically creates train.csv and test.csv files for model training and evaluation.
 
-coming more 
+## For running the Docker project 
+# docker run -p 5000:5000 studentperformance
