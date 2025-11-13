@@ -96,6 +96,4 @@ This repository is licensed under the MIT License. See [LICENSE](LICENSE) for de
 
 ## Contact
 
-Feel free to reach out with questions or suggestions:
 - GitHub: [Farzam1372](https://github.com/Farzam1372)
-- Email: your.email@example.com
