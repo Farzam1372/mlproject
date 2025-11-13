@@ -1,16 +1,5 @@
-## End to End ML project Students Performance in Exams prediction
+# End to End ML project Students Performance in Exams prediction
 
-
-
-
-
-## For running the Docker project 
-# docker run -p 5000:5000 studentperformance
-
-
-# mlproject
-
-A machine learning project repository.
 
 ## Table of Contents
 
