@@ -1,11 +1,10 @@
-# End to End ML project Students Performance in Exams prediction
-
+# End to End ML project — Students Performance in Exams prediction
 
 ## Table of Contents
 
 - [Overview](#overview)
 - [Installation](#installation)
-- [Data Ingestion](#Data-Ingestion)
+- [Data Ingestion](#data-ingestion)
 - [Usage](#usage)
 - [Project Structure](#project-structure)
 - [Features](#features)
@@ -16,7 +15,7 @@
 
 ## Overview
 
-This repository contains implementation and experiments related to machine learning. It includes scripts, notebooks, and resources for data processing, model training, and evaluation.
+This repository contains an end-to-end machine learning project for predicting student exam performance. It includes source code for data ingestion, preprocessing, model training, a small web application for prediction, and notebooks used for exploratory analysis and experiments.
 
 ## Installation
 
@@ -24,60 +23,105 @@ This repository contains implementation and experiments related to machine learn
 git clone https://github.com/Farzam1372/mlproject.git
 cd mlproject
 # (Optional) Create and activate a virtual environment
-python3 -m venv venv
+python -m venv venv
+# On Unix/macOS
 source venv/bin/activate
+# On Windows (PowerShell)
+# .\venv\Scripts\Activate.ps1
+
 # Install required packages
 pip install -r requirements.txt
 ```
 
+Note: The project was developed with Python 3.11 (see notebook metadata). Using a recent Python 3.x interpreter is recommended.
+
 ## Data Ingestion (Kaggle Dataset)
 
-This project loads the **Students Performance in Exams** dataset directly from Kaggle using **KaggleHub**.
+This project loads the **Students Performance in Exams** dataset directly from Kaggle using the `kagglehub` adapter in the data ingestion component.
 
-The link: https://www.kaggle.com/datasets/spscientist/students-performance-in-exams?resource=download
+Kaggle dataset reference: https://www.kaggle.com/datasets/spscientist/students-performance-in-exams
 
-▶️ To run the Data Ingestion Module just Copy code :
-"python -m src.components.data_ingestion"
+To run the data ingestion module locally:
 
-The script downloads the dataset, saves it under artifacts/data.csv, and automatically creates train.csv and test.csv files for model training and evaluation.
+```bash
+python -m src.components.data_ingestion
+```
+
+What this does:
+- Downloads/loads the dataset via `kagglehub` (the code uses KaggleDatasetAdapter to load into a pandas DataFrame).
+- Standardizes column names (lowercase, non-alphanumerics replaced by underscores).
+- Writes a raw copy to `artifacts/data.csv` and creates `artifacts/train.csv` and `artifacts/test.csv` (80/20 split).
+
+Requirements / notes:
+- `kagglehub` must be installed and configured. The dataset load requires internet access and appropriate credentials if needed by your environment.
 
 ## Usage
 
-- Prepare your data in the specified format.
-- Modify configuration files if needed.
-- Run training scripts or notebooks:
+Available entry points in this repository:
+
+- Training pipeline (programmatic):
   ```bash
-  python train.py --config config.yaml
+  python -m src.pipeline.train_pipeline
   ```
-- Refer to each script's documentation for detailed usage.
+  This runs the training pipeline implemented under `src/pipeline` and will produce model artifacts under `artifacts/`.
+
+- Prediction pipeline (programmatic):
+  ```bash
+  python -m src.pipeline.predict_pipeline
+  ```
+
+- Web app (Flask) UI for single datapoint prediction:
+  ```bash
+  python application.py
+  ```
+  Then open http://127.0.0.1:5000 in your browser.
+
+Important note about the web form (templates/home.html): currently the two numeric input fields in the HTML are mislabeled (the `name` attributes are swapped between `reading_score` and `writing_score`). If you rely on the form, be aware of this mismatch or correct `templates/home.html` so the inputs match their labels.
 
 ## Project Structure
 
+(This is the actual layout in the repository root — updated to match repository contents)
+
 ```
 mlproject/
-├── data/            # Data files and datasets
-├── notebooks/       # Jupyter notebooks
-├── src/             # Source code for models and utilities
-├── config/          # Configuration files
-├── requirements.txt # Python dependencies
-├── train.py         # Entry point for training
-└── README.md        # Project documentation
+├── .ebextensions/
+├── artifacts/                # Generated dataset and model artifacts (data.csv, train.csv, test.csv, model.pkl, preprocessor.pkl)
+├── catboost_info/
+├── notebook/                 # Jupyter notebooks used for EDA and experiments
+├── src/                      # Source code (components, pipeline, utils, etc.)
+│   ├── components/
+│   │   ├── data_ingestion.py
+│   │   ├── data_transformation.py
+│   │   └── model_trainer.py
+│   ├── pipeline/
+│   │   ├── train_pipeline.py
+│   │   └── predict_pipeline.py
+│   ├── exception.py
+│   ├── logger.py
+│   └── utils.py
+├── templates/                # HTML templates for the web UI
+├── application.py            # Flask app entry point for predictions
+├── requirements.txt
+├── setup.py
+└── README.md
 ```
 
 ## Features
 
-- Data preprocessing
-- Model building and training
-- Evaluation metrics
-- Experiment tracking
+- Data ingestion from Kaggle via `kagglehub` adapter
+- Data preprocessing and column standardization
+- Training pipeline that outputs model and preprocessor artifacts
+- A small web UI to submit single datapoints for prediction
+- Notebooks for EDA and experimentation
 
 ## Requirements
 
-- Python 3.9x
-- See requirements.txt for full package dependencies
- install requirements.txt for installing all needed packages
- 
-- pip install -r requirements.txt
+- Python 3.11+ is recommended (notebooks were run with Python 3.11)
+- Install dependencies:
+  ```bash
+  pip install -r requirements.txt
+  ```
+- If running data ingestion via Kaggle, ensure `kagglehub` (and any credentials) are set up in your environment.
 
 ## Contributing
 
@@ -88,7 +132,7 @@ Contributions are welcome! To contribute:
 4. Push to the branch (`git push origin feature-name`)
 5. Open a pull request
 
-Please follow the coding conventions already in place.
+Please follow the existing coding style and include tests where appropriate.
 
 ## License
 
